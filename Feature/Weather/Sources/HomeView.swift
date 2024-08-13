@@ -11,25 +11,18 @@ import MapKit
 
 struct HomeView: View {
   @State var offset: CGFloat = 0
-  @State var model: Weather.CurrentWeatherEntity
+  @Binding var model: Weather.CurrentWeatherEntity
   var topEdge: CGFloat
 
   var body: some View {
-    ZStack {
-      ScrollView(showsIndicators: false) {
-        VStack {
-
-          TitleView(model: model.titleModel)
-
-          DailyWeatherView(model: model)
-
-        }
-        .padding(.top, topEdge)
-        .padding([.horizontal, .bottom])
+    ScrollView(showsIndicators: false) {
+      VStack {
+        TitleView(model: model.titleModel)
+        DailyWeatherView(model: model)
       }
+      .padding(.top, topEdge)
+      .padding([.horizontal, .bottom])
     }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(LinearGradient(colors: [Color(.blue), Color(.purple)], startPoint: .topTrailing, endPoint: .bottomTrailing))
   }
 }
 
@@ -61,8 +54,4 @@ fileprivate struct TitleView: View {
     }
     .padding()
   }
-}
-
-#Preview {
-  ContentView()
 }

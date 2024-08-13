@@ -7,31 +7,46 @@
 
 import Foundation
 
-enum Weather {
-  struct CurrentWeatherEntity: Identifiable {
-    var id = UUID().uuidString
+public enum Weather {
+  public struct CurrentWeatherEntity: Identifiable {
+    public var id = UUID().uuidString
+    public let titleModel: TitleModel
+    public let coordinate: Coordinate2D
+    public let dailyForecast: [DailyForecast]
+    public let hourlyForecast: [HourlyForecast]
 
-    let titleModel: TitleModel
-    let coordinate: Coordinate2D
-    let dailyForecast: [DailyForecast] = Weather.DailyForecast.mock
-    let hourlyForecast: [HourlyForecast] = Weather.HourlyForecast.mock
-
-    let humidity: Double
-    let cloudy: Double
-    let windSpeed: Double
+    public let humidity: Int
+    public let cloudy: Int
+    public let windSpeed: Double
   }
 
-  struct Coordinate2D {
-    var latitude: Double
-    var longitude: Double
+  public struct Coordinate2D {
+    public let latitude: Double
+    public let longitude: Double
   }
 
-  struct TitleModel {
-    var timezone: String
-    var temparature: Int
-    var description: String
-    var maxTemparature: Int
-    var minTemparature: Int
+  public struct TitleModel {
+    public let timezone: String
+    public let temparature: Int
+    public let description: String
+    public let maxTemparature: Int
+    public let minTemparature: Int
   }
 }
 
+public extension Weather.CurrentWeatherEntity {
+  static var mock: Self = .init(
+    titleModel: .init(
+      timezone: "Asia/Seoul",
+      temparature: 25,
+      description: "Clear Sky",
+      maxTemparature: 30,
+      minTemparature: 20),
+    coordinate: .init(latitude: 37.5665, longitude: 126.9780),
+    dailyForecast: Weather.DailyForecast.mock,
+    hourlyForecast: Weather.HourlyForecast.mock,
+    humidity: 0,
+    cloudy: 0,
+    windSpeed: 1.2
+  )
+}

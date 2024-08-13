@@ -7,29 +7,28 @@
 
 import Foundation
 
-extension Weather {
+public extension Weather {
   struct HourlyForecast: Identifiable {
-    var id = UUID().uuidString
-
-    var time: String
-    var celcius: Double
-    var image: String
+    public var id = UUID().uuidString
+    public var time: String
+    public var celcius: Double
+    public var image: String
   }
 }
 
-extension Weather.HourlyForecast {
+public extension Weather.HourlyForecast {
   static var mock: [Weather.HourlyForecast] {
     [
-      .init(time: "Now", celcius: 94, image: "sun.min"),
-      .init(time: "Now", celcius: 94, image: "sun.min"),
-      .init(time: "Now", celcius: 94, image: "sun.min"),
-      .init(time: "Now", celcius: 94, image: "sun.min"),
-      .init(time: "Now", celcius: 94, image: "sun.min"),
-      .init(time: "Now", celcius: 94, image: "sun.min"),
-      .init(time: "Now", celcius: 94, image: "sun.min"),
-      .init(time: "Now", celcius: 94, image: "sun.min"),
-      .init(time: "Now", celcius: 94, image: "sun.min"),
-      .init(time: "Now", celcius: 94, image: "sun.min"),
+      .init(time: "Now", celcius: 94, image: "01d"),
+      .init(time: "Now", celcius: 94, image: "01d"),
+      .init(time: "Now", celcius: 94, image: "01d"),
+      .init(time: "Now", celcius: 94, image: "01d"),
+      .init(time: "Now", celcius: 94, image: "01d"),
+      .init(time: "Now", celcius: 94, image: "01d"),
+      .init(time: "Now", celcius: 94, image: "01d"),
+      .init(time: "Now", celcius: 94, image: "01d"),
+      .init(time: "Now", celcius: 94, image: "01d"),
+      .init(time: "Now", celcius: 94, image: "01d"),
     ]
   }
 }

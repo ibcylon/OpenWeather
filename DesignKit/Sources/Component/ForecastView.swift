@@ -13,12 +13,14 @@ struct ForecastView: View {
   var body: some View {
     VStack(spacing: 15) {
       Text(model.time)
-      Image(systemName: model.image)
+      Image(model.image)
+        .resizable()
+        .frame(width: 30, height: 30)
         .font(.title2)
-        .symbolVariant(.fill)
-        .symbolRenderingMode(.palette)
-        .foregroundStyle(.yellow, .white)
-        .frame(height: 30)
+//        .symbolVariant(.fill)
+//        .symbolRenderingMode(.palette)
+//        .foregroundStyle(.yellow, .white)
+//        .frame(height: 30)
 
       Text("\(Int(model.celcius))°")
         .font(.callout.bold())

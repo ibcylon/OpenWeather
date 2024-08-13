@@ -52,7 +52,7 @@ struct DailyWeatherView: View {
         }
       } contentView: {
         VStack {
-          MapView(coordinate: model.coordinate)
+          MapView(model: model)
               .frame(height: 300)
         }
         .foregroundStyle(.white)
@@ -147,8 +147,4 @@ struct DailyWeatherView: View {
       }
     }
   }
-}
-
-#Preview {
-  ContentView()
 }

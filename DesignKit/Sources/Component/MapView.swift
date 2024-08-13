@@ -18,7 +18,7 @@ struct MapView: UIViewRepresentable {
     }
   }
 
-  var coordinate: Weather.Coordinate2D
+  var model: Weather.CurrentWeatherEntity
 
   func makeCoordinator() -> Coordinator {
     return Coordinator(parent: self)
@@ -30,20 +30,16 @@ struct MapView: UIViewRepresentable {
     return mapView
   }
   func updateUIView(_ uiView: MKMapView, context: Context) {
-    let coordinate2D = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
-    let span = MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
+    let coordinate2D = CLLocationCoordinate2D(latitude: model.coordinate.latitude, longitude: model.coordinate.longitude)
+    let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     let region = MKCoordinateRegion(center: coordinate2D, span: span)
     uiView.setRegion(region, animated: true)
 
     let annotation = MKPointAnnotation()
     annotation.coordinate = coordinate2D
-    annotation.title = "San Francisco"
+    annotation.title = model.titleModel.timezone
     uiView.addAnnotation(annotation)
 
     uiView.showsUserLocation = true
   }
-}
-
-#Preview {
-  MapView(coordinate: .init(latitude: 37.7749, longitude: -122.4194))
 }

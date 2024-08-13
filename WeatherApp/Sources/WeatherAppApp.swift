@@ -2,9 +2,10 @@ import SwiftUI
 
 @main
 struct WeatherAppApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+  @StateObject var searchStore = SearchStore()
+  var body: some Scene {
+    WindowGroup {
+      ContentView(searchStore: searchStore)
     }
+  }
 }
