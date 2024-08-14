@@ -24,3 +24,9 @@ extension DefaultCurrentWeatherUseCase: CurrentWeatherUseCase {
     try await repository.fetchWeather(timezone: timezone)
   }
 }
+
+final class MockCurrentWeatherUseCase: CurrentWeatherUseCase {
+  func fetchWeather(timezone: Timezone) async throws -> Weather.CurrentWeatherEntity {
+    return .mock
+  }
+}

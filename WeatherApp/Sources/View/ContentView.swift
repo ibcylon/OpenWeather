@@ -6,27 +6,33 @@ public enum WeatherScene: Hashable {
 }
 
 public struct ContentView: View {
-  @StateObject var store: MainStore = .init(useCase: DefaultCurrentWeatherUseCase(repository: DefaultWeatherRepository()))
+  @StateObject var store: MainStore
   @ObservedObject var searchStore: SearchStore
 
   public var body: some View {
-    NavigationStack(path: $store.stackPaths) {
+    NavigationStack {
       ZStack {
         VStack {
-          SearchButton()
-            .onTapGesture {
-              store.isSearching = true
-            }
-          HomeView(model: $store.weather, topEdge: 0)
+          SearchButton {
+            store.isSearching = true
+          }
+          HomeView(model: store.weather, topEdge: 0)
         }
-        .sheet(isPresented: $store.isSearching, onDismiss: {
-          store.isSearching = false
-        }) {
+        .fullScreenCover(isPresented: $store.isSearching) {
           NavigationStack {
             SearchView(
               store: searchStore,
-              timezone: $store.timezone
+              timezone: $store.timezone,
+              isSearching: $store.isSearching
             )
+            .toolbar {
+              ToolbarItem(placement: .cancellationAction) {
+                Button("Close") {
+                  store.isSearching = false
+                }
+                .tint(.white)
+              }
+            }
           }
         }
       }
@@ -37,8 +43,10 @@ public struct ContentView: View {
 }
 
 
-struct ContentView_Previews: PreviewProvider {
-  static var previews: some View {
-    ContentView(searchStore: SearchStore())
-  }
+#Preview {
+  let searchStore = SearchStore(searchUseCase: DefaultSearchTimezoneUsecase(repository: SearchRepositoryImpl()))
+  searchStore.suggestions = [.default]
+  return ContentView(store: MainStore(
+    useCase: MockCurrentWeatherUseCase(),
+    timezone: .default), searchStore: searchStore)
 }

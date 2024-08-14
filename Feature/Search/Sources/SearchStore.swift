@@ -10,56 +10,37 @@ import Combine
 
 @MainActor
 final class SearchStore: ObservableObject {
+  private let searchUseCase: SearchTimezoneUseCase
+  private var timezones: [Timezone] = []
+  private var cancellables: Set<AnyCancellable> = []
+
   @Published var text: String = ""
   @Published var suggestions: [Timezone] = []
 
-  var timezones: [Timezone] = []
-  private var cancellables: Set<AnyCancellable> = []
+  init(searchUseCase: SearchTimezoneUseCase) {
+    self.searchUseCase = searchUseCase
 
-  init() {
-    Task(priority: .background, operation: {
-      self.timezones = fetchLocations()
-    })
+    bind()
+  }
 
+  func bind() {
+    
     $text
+      .filter { !$0.isEmpty }
       .removeDuplicates()
       .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
       .sink { [weak self] query in
         guard let self else { return }
         Task(priority: .userInitiated) {
-          self.suggestions = await self.search(query, dataSource: self.timezones)
+          self.suggestions = try await self.searchUseCase.searchTimezone (query: query, dataSource: self.timezones)
         }
-      }.store(in: &cancellables)
+      }
+      .store(in: &cancellables)
   }
 
-  func fetchLocations() -> [Timezone] {
-    return Bundle.main.decode(
-      [TimeZoneDTO].self,
-      from: "Timezones.json")
-    .map { $0.toDomain() }
-  }
-
-  private func search(_ query: String, dataSource: [Timezone]) async -> [Timezone] {
-    guard !query.isEmpty else {
-      return []
-    }
-
-    var query = query
-      .lowercased()
-
-    let replaceQuery = query.replacingOccurrences(of: " ", with: "")
-
-    let result = dataSource
-      .filter {
-        let word = query.components(separatedBy: " ")[0]
-        return $0.city.lowercased().prefix(word.count) == word
-      }
-      .filter {
-        $0.city.lowercased()
-          .replacingOccurrences(of: " ", with: "")
-          .contains(replaceQuery)
-      }
-
-    return result
+  func prefetch() {
+    Task(priority: .background, operation: {
+      self.timezones = try await searchUseCase.prefetchTimezone()
+    })
   }
 }

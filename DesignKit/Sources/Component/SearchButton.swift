@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SearchButton: View {
+  var tapAction: () -> Void
+
   var body: some View {
     ZStack {
       RoundedRectangle(cornerRadius: 30)
@@ -23,5 +25,8 @@ struct SearchButton: View {
     }
     .frame(maxHeight: 40)
     .padding()
+    .onTapGesture {
+      tapAction()
+    }
   }
 }

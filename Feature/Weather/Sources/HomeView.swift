@@ -10,8 +10,7 @@ import SwiftUI
 import MapKit
 
 struct HomeView: View {
-  @State var offset: CGFloat = 0
-  @Binding var model: Weather.CurrentWeatherEntity
+  var model: Weather.CurrentWeatherEntity
   var topEdge: CGFloat
 
   var body: some View {

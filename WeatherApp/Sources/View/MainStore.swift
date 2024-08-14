@@ -10,30 +10,34 @@ import Combine
 
 @MainActor
 final class MainStore: ObservableObject {
-  @Published var timezone: Timezone?
+  @Published var timezone: Timezone
   @Published var weather: Weather.CurrentWeatherEntity = .mock
   @Published var isSearching: Bool = false
-  @Published var stackPaths: [WeatherScene] = []
 
   private var cancellables: Set<AnyCancellable> = []
   private let useCase: CurrentWeatherUseCase
 
-  init(useCase: CurrentWeatherUseCase) {
+  init(useCase: CurrentWeatherUseCase, timezone: Timezone) {
     self.useCase = useCase
+    self.timezone = timezone
 
-    fetchWeather()
+    bind()
   }
 
-  func fetchWeather() {
+  func bind() {
     $timezone
-      .map { $0 ?? .default }
-      .receive(on: DispatchQueue.main)
+      .removeDuplicates(by: { $0.id == $1.id })
       .sink { [weak self] timezone in
         guard let self = self else { return }
-        Task {
-          self.weather = try await self.useCase.fetchWeather(timezone: timezone)
-        }
+        fetchWeather(timezone: timezone)
       }
       .store(in: &cancellables)
   }
+
+  private func fetchWeather(timezone: Timezone) {
+    Task {
+      self.weather = try await self.useCase.fetchWeather(timezone: timezone)
+    }
+  }
 }
+
